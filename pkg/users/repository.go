@@ -1,6 +1,8 @@
 package users
 
 import (
+	"log"
+
 	"github.com/bpradana/goilerplate/pkg/domain"
 	"gorm.io/gorm"
 )
@@ -22,6 +24,7 @@ func (u *userRepository) GetAll() ([]domain.User, error) {
 
 	err := u.db.Find(&users).Error
 	if err != nil {
+		log.Println("[userRepository] [GetAll] error querying all users, err: ", err.Error())
 		return nil, err
 	}
 
@@ -33,19 +36,21 @@ func (u *userRepository) GetById(id int) (domain.User, error) {
 
 	err := u.db.First(&user, id).Error
 	if err != nil {
+		log.Println("[userRepository] [GetById] error querying user, err: ", err.Error())
 		return user, err
 	}
 
 	return user, nil
 }
 
-func (u *userRepository) Create(user *domain.User) (domain.User, error) {
+func (u *userRepository) Create(user *domain.User) (*domain.User, error) {
 	err := u.db.Create(user).Error
 	if err != nil {
-		return *user, err
+		log.Println("[userRepository] [Create] error creating user, err: ", err.Error())
+		return nil, err
 	}
 
-	return *user, nil
+	return user, nil
 }
 
 func (u *userRepository) Update(id int, user *domain.User) (*domain.User, error) {
@@ -53,15 +58,17 @@ func (u *userRepository) Update(id int, user *domain.User) (*domain.User, error)
 
 	err := u.db.First(&oldUser, id).Error
 	if err != nil {
+		log.Println("[userRepository] [Update] error querying user, err: ", err.Error())
 		return nil, err
 	}
 
 	err = u.db.Model(&oldUser).Updates(user).Error
 	if err != nil {
+		log.Println("[userRepository] [Update] error updating user, err: ", err.Error())
 		return nil, err
 	}
 
-	return &oldUser, nil
+	return user, nil
 }
 
 func (u *userRepository) Delete(id int) error {
@@ -69,6 +76,7 @@ func (u *userRepository) Delete(id int) error {
 
 	err := u.db.Delete(&user, id).Error
 	if err != nil {
+		log.Println("[userRepository] [Delete] error deleting user, err: ", err.Error())
 		return err
 	}
 

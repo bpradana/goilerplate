@@ -16,13 +16,13 @@ func main() {
 	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("error loading .env file, err: ", err.Error())
+		log.Println("[app] [server] error loading .env file, err: ", err.Error())
 	}
 
 	// Connect to database
 	db, err := db.ConnectDB()
 	if err != nil {
-		log.Println("error connecting to database, err: ", err.Error())
+		log.Println("[app] [server] error connecting to database, err: ", err.Error())
 	}
 
 	// Create echo instance
@@ -34,6 +34,7 @@ func main() {
 
 	// Routes
 	userRepo := users.NewRepository(db)
+	userUsecase := users.NewUsecase(userRepo)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
