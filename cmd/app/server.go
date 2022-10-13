@@ -36,6 +36,9 @@ func main() {
 	userRepo := users.NewRepository(db)
 	userUsecase := users.NewUsecase(userRepo)
 
+	v1 := e.Group("/v1")
+	users.NewHandler(v1, userUsecase)
+
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
 }
